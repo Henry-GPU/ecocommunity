@@ -6,9 +6,10 @@ import axios from 'axios';
 import placeholder from '../images/placeholder.png';
 import "../stylesheets/Sidebar.css"
 import Sidebar from "./Sidebar.jsx";
+import url from "./serveo.js";
 
 const axiosInstance = axios.create({
-  baseURL: 'https://b1b4-181-174-106-75.ngrok-free.app',
+  baseURL: url,
 });
 
 function Navbar({ isAuthenticated, userProfile, handleLogout, openLoginModal, userName, handleOpenSettings }) {
@@ -36,7 +37,7 @@ function Navbar({ isAuthenticated, userProfile, handleLogout, openLoginModal, us
           params: { email: email }
         });
         if (response.data.profileImage) {
-          setProfileImage(`https://b1b4-181-174-106-75.ngrok-free.app/uploads/${response.data.profileImage}`);
+          setProfileImage(`${url}/uploads/${response.data.profileImage}`);
         } else {
           setProfileImage(placeholder);
         }
