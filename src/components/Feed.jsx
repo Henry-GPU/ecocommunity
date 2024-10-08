@@ -48,4 +48,4 @@ function Feed({ posts, userEmail }) {
         </div>
     );
 }
-
+export default Feed;
