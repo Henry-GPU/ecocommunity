@@ -9,6 +9,7 @@ import CreatePostModal from "./components/CreatePostModal";
 import Settings from "./components/Settings";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Profile from "./components/Profile"
+import url from "./components/serveo";
 
 function App() {
   const [userName, setUserName] = useState('');
@@ -56,7 +57,11 @@ function App() {
   // Función para cargar posts
   const loadPosts = async () => {
     try {
-      const response = await axios.get('https://b1b4-181-174-106-75.ngrok-free.app/api/posts');
+      const response = await axios.get(`${url}/api/posts`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
       setPosts(response.data);
     } catch (error) {
       console.error('Error al cargar los posts:', error);
@@ -67,9 +72,11 @@ function App() {
     if (!userEmail) return; 
 
     try {
-      const response = await axios.get('https://b1b4-181-174-106-75.ngrok-free.app/api/get-user-name', {
-        params: { userEmail }
-      });
+      const response = await axios.get(`${url}/api/get-user-name`, {
+        params: { userEmail }},
+        {headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }});
       setUserName(response.data.userName);
     } catch (error) {
       console.error("Error al obtener el nombre de usuario", error);
@@ -78,9 +85,13 @@ function App() {
 
   const updateProfile = async (updatedProfile) => {
     try {
-      const response = await axios.put('https://b1b4-181-174-106-75.ngrok-free.app/api/update-profile', {
+      const response = await axios.put(`${url}/api/update-profile`, {
         email: userEmail,
         ...updatedProfile
+      },{
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
 
       if (response.status === 200) {
