@@ -9,9 +9,13 @@ const sql = require('mssql'); // Asegúrate de tener esto al principio del archi
 const app = express();
 const PORT = 5000;
 
-app.use(cors({
-  origin: ['http://192.168.0.3:3000', 'http://localhost:3000', 'https://ecocommunity-2hxk.vercel.app'],
-}));
+const corsOptions = {
+    origin: 'https://ecocommunity-91av.vercel.app',  // Permitir solo este origen
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,  // Si necesitas enviar cookies u otras credenciales
+};
+
+app.use(cors(corsOptions));
 
 app.use('/uploads', express.static('uploads'));
 app.use('/icons', express.static('icons'));
