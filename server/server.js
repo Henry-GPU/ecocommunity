@@ -10,7 +10,7 @@ const app = express();
 const PORT = 5000;
 
 const corsOptions = {
-    origin: 'https://ecocommunity-91av.vercel.app',  // Permitir solo este origen
+    origin: 'https://ecocommunity-lu3t.vercel.app',  // Permitir solo este origen
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,  // Si necesitas enviar cookies u otras credenciales
 };
