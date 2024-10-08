@@ -4,7 +4,7 @@ import Post from './Post';
 function Feed({ posts, userEmail }) {
     return (
         <div>
-            {Array.isArray(posts) && posts.length > 0 ? (
+            {Array.isArray(posts) ? (
                 posts.map((post) => (
                     <Post
                         post={post}
@@ -48,3 +48,4 @@ function Feed({ posts, userEmail }) {
         </div>
     );
 }
+
