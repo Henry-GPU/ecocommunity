@@ -1,180 +1,184 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import '../stylesheets/Post.css';
 import axios from "axios";
-import "../stylesheets/Settings.css";
 import placeholder from '../images/placeholder.png';
-import { Link, useNavigate } from "react-router-dom";
-import url from "./serveo";
-function Profile({ isOpen, onClose, currentProfileImage, currentUsername, currentEmail, onUpdateProfile }) {
-  const [username, setUsername] = useState(currentUsername);
-  const [email, setEmail] = useState(currentEmail);
-  const [password, setPassword] = useState("");
-  const [profileImage, setProfileImage] = useState(currentProfileImage);
-  const [profileImagePreview, setProfileImagePreview] = useState(currentProfileImage);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Para almacenar el ID del usuario
+import L, { Handler } from 'leaflet';
+import url from './serveo';
 
-  const navigate = useNavigate(); // Asegúrate de definir useNavigate
+const axiosInstance = axios.create({
+  baseURL: url
+});
 
-  const handleProfileImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfileImage(file);
-      setProfileImagePreview(URL.createObjectURL(file));
-    }
-  };
+function Post({ userEmail, name, time, comment, postImage, location, userAuthEmail, post }) {
+  const [likesCount, setLikesCount] = useState(JSON.parse(post.Likes).length);
+  const [verificationsCount, setVerificationsCount] = useState(JSON.parse(post.Verifications).length);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [hasVerified, setHasVerified] = useState(false);
+  const [userImage, setUserImage] = useState(placeholder);
+  const [modalVisible, setModalVisible] = useState(false);
+  
 
-  const fetchProfileImage = useCallback(async () => {
+    const customIcon = L.icon({
+      iconUrl: `${url}/icons/location.png`,
+      iconSize: [25, 30], 
+      iconAnchor: [12, 41] 
+    });
+
+  const fetchUserImage = useCallback(async () => {
     try {
-      const email = currentEmail;
+      const email = userEmail;
       if (email) {
-        const response = await axios.get(`${url}/api/get-profile-image`, {
+        const response = await axiosInstance.get('/api/get-profile-image', {
           params: { email: email }
         });
         if (response.data.profileImage) {
-          setProfileImagePreview(`${url}/uploads/${response.data.profileImage}`);
+          setUserImage(`${url}/uploads/${response.data.profileImage}`);
         } else {
-          setProfileImagePreview(placeholder);
+          setUserImage(placeholder);
         }
       }
     } catch (error) {
       console.error('Error al obtener la imagen del perfil:', error);
-      setProfileImage(placeholder);
+      setUserImage(placeholder);
     }
-  }, [currentEmail]);
+  }, [userEmail]);
+  useEffect(() => {
+    setHasLiked(false);
+    setHasVerified(false);
+}, [userAuthEmail]);
 
   useEffect(() => {
-    fetchProfileImage();
-  }, [fetchProfileImage]);
+    const userLikes = JSON.parse(post.Likes);
+    const userVerifications = JSON.parse(post.Verifications);
 
-  const fetchUserId = useCallback(async () => {
+    setHasLiked(userLikes.includes(userAuthEmail));
+    setHasVerified(userVerifications.includes(userAuthEmail));
+
+    setLikesCount(userLikes.length);
+    setVerificationsCount(userVerifications.length);
+    
+    fetchUserImage();
+  }, [fetchUserImage, post.Likes, post.Verifications, userAuthEmail]);
+
+
+
+  const handleLike = async () =>{
     try {
-      const response = await axios.get(`${url}/api/get-user-id`, {
-        params: { email: currentEmail }
-      });
-      return response.data.userId; // Devuelve el ID del usuario
+      if (hasLiked) {
+        const response = await axios.post(`${url}/api/posts/${post.Id}/unlike`, 
+          { email: userAuthEmail },
+          {
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            }
+          });
+        setLikesCount(likesCount - 1);
+        setHasLiked(false);
+      } else {
+        const response = await axios.post(`${url}/api/posts/${post.Id}/like`, 
+          { email: userAuthEmail },
+          {
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            }
+          });
+        setLikesCount(likesCount + 1);
+        setHasLiked(true);
+      }
     } catch (error) {
-      console.error("Error al obtener el ID del usuario:", error);
-      alert("No se pudo obtener el ID del usuario");
-    }
-  }, [currentEmail]);
-
-  const handleSave = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    const userId = await fetchUserId(); // Obtener el userId directamente
-
-    if (!userId) {
-      alert("No se pudo obtener el ID del usuario. Asegúrate de que el correo electrónico sea correcto.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    const formData = new FormData();
-
-    if (profileImage) formData.append("profilePicture", profileImage);
-    if (username) formData.append("name", username);
-    if (email) formData.append("email", email);
-    if (password) formData.append("password", password);
-
-    try {
-      await axios.put(`${url}/api/update-profile/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      alert("Perfil actualizado con éxito");
-      navigate('/'); // Redirige después de actualizar
-    } catch (error) {
-      console.error("Error al actualizar el perfil:", error);
-      alert("Hubo un error al actualizar el perfil");
-    } finally {
-      setIsSubmitting(false);
+      console.error("Error al manejar el like:", error);
     }
   };
 
-  if (!isOpen) {
-    return null;
+  const handleVerify = async () => {
+    if(hasVerified) return;
+    try {
+      const response = await axios.post(`${url}/api/posts/${post.Id}/verify`, 
+        { email: userAuthEmail },
+        {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+      setHasVerified(true);
+      setVerificationsCount(verificationsCount + 1);
+    } catch (error) {
+      console.error("Error al verificar la publicación:", error);
+    }
+  };
+  const isVerified  = () =>{
+    console.log(verificationsCount);
+    if(verificationsCount > 4){
+      console.log(true);
+      return true;
+    }else{
+      console.log(false);
+      return false;
+    }
   }
 
   return (
-    <div className="settings-container">
-      <div className="settings-content">
-        <h2>Ajustes de perfil</h2>
-
-        <div className="profile-image-section">
-          <label htmlFor="profileImage">
-            <div className="settings-user-image-container">
-              <img
-                src={profileImagePreview || placeholder}
-                alt="Profile Preview"
-                className="profile-image-preview"
-              />
-              <img 
-                src={`${url}/icons/edit.png`}
-                alt="Edit image"
-                className="edit-icon"
-              />
+    <div className="post-container">
+      <div className="header-post-container">
+        <div className="user-post-container">
+          <img className="user-post-image" src={userImage} alt="User" />
+          <div className="user-info-post">
+            <p className="user-name">{name}</p>
+            <p className="post-time">{time}</p>
+          </div>
+        </div>
+        {isVerified() && (
+          <div className="verification-container">
+            <p className="verification-description">Problema resuelto</p>
+            <img className="verification-icon" src={`${url}/icons/verify.png`} alt="verification" />
+          </div>
+        )}
+      </div>
+      <p className="post-comment">{comment}</p>
+      <div className="map-button-container">
+        <div className="post-location-button" 
+        onClick={() => setModalVisible(true)}>
+          <span>Ubicación</span>
+          <img className="location-icon" src={`${url}/icons/location.png`}/>
+        </div>
+      </div>
+      
+      {modalVisible && (
+        <div className="modal">
+          <div className="map-modal-content">
+            <div className="close-button-container">
+              <button className="close-button" onClick={() => setModalVisible(false)}>×</button>
             </div>
-            
-          </label>
-          <input
-            type="file"
-            id="profileImage"
-            accept="image/*"
-            onChange={handleProfileImageChange}
-            style={{ display: "none" }}
-          />
-        </div>
+            <div className="map-container">
+              <MapContainer center={[location.lat, location.lng]} zoom={25} style={{ height: "600px", width: "100%" }}>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker position={[location.lat, location.lng]} icon={customIcon}>
+                  <Popup>Ubicación del post</Popup>
+                </Marker>
+              </MapContainer>
+              <div className="create-post-modal-buttons-container">
 
-        <div className="username-section">
-          <label htmlFor="username">Nombre de usuario:</label>
-          <input
-            className="username-input"
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+              </div>
+            </div>
+          </div>
         </div>
+      )}
 
-        <div className="email-section">
-          <label htmlFor="email">Correo electrónico:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="password-section">
-          <label htmlFor="password">Nueva contraseña:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder=""
-          />
-        </div>
-        <div className="settings-note">
-          <p>No es necesario llenar todos los campos, 
-            solo rellena el que necesitas editar y guarda los cambios.
-          </p>
-        </div>
-
-        <div className="settings-buttons">
-          <button 
-            className="submit-link-button" 
-            onClick={handleSave} 
-            disabled={isSubmitting}>
-            {isSubmitting ? "Guardando..." : "Guardar Cambios"}
-          </button>
-          <Link className="cancel-link-button" to="/">Cancelar</Link>
-        </div>
+      <img className="post-image" src={`${url}/uploads/${postImage}`} alt="Post" />
+      <div className="buttons-post-container">
+        <img src={hasLiked ? `${url}/icons/like.png`: `${url}/icons/nolike.png`} 
+        alt="Like" className="like-button" 
+        onClick={handleLike} />
+        <label className="likes-count">{likesCount}{likesCount === 1 ? ' Like' : ' Likes'}</label>
+        <button className="verify-button" onClick={handleVerify} style={hasVerified ? {fontWeight: 600} : {fontWeight: 500}}>{hasVerified ? '✓' : 'Verificar'}</button>
       </div>
     </div>
   );
 }
 
-export default Profile;
+export default Post;
