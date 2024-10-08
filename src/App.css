@@ -1,0 +1,57 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(39, 39, 39);
+  font-family: Arial, sans-serif;
+  
+}
+
+input{
+  font-size: 16px !important;
+}
+
+button:hover{
+  opacity: 0.8;
+}
+
+.posts-container{
+  padding-top: 60px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+App{
+  margin: 0;
+}
+
+input:-webkit-autofill {
+  background-color: transparent !important; /* Fondo transparente o tu preferencia */
+  -webkit-box-shadow: 0 0 0 1000px #363636 inset !important; /* Cambia el color del fondo */
+  -webkit-text-fill-color: #ffffff !important; /* Cambia el color del texto */
+}
+
+/* Para Firefox y otros navegadores */
+input:autofill {
+  background-color: transparent !important;
+  box-shadow: 0 0 0 1000px #363636 inset !important;
+  color: #fff !important;
+}
+
+input {
+  background-color: #363636;
+  border:#0ab48a solid 2px;
+  border-radius: 7px;
+  color: #ffffff;
+  padding: 7px;
+  font-size: 15px !important;
+}
+
+input:focus{
+  border:#0ab48a solid 2px;
+}
+input:focus::-webkit-progress-bar {
+  background-color: #4caf50; /* Color de la barra de progreso */
+}

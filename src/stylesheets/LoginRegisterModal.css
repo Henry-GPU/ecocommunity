@@ -1,0 +1,168 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px); 
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.modal-content {
+  box-sizing: border-box;
+  display:flex;
+  background-color: #363636; 
+  color: #fff; 
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px; 
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  position: relative;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  margin: 0 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.close-button-container{
+  display: flex;
+  width: 100%;
+  justify-content: end;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+label{
+  width: 100%;
+  margin: 5px 0;
+}
+
+.close-button:hover {
+  color: #f39c12; 
+}
+
+.modal-form{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.modal-body input{
+  width: 100%;
+  display: flex;
+  border-radius: 5px;
+  height: 20px;
+  border: solid 2px #0ab48a;
+  color: #ffffff;
+  background-color: #272727;
+}
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.login-modal-button{
+  background-color: #0ab48a; 
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin:0 30px;
+}
+.toggle-button{
+  background: none;
+  border: none;
+  color: #0ab48a;
+  margin:15px 30px 0 30px;
+}
+
+.toggle-button:hover,
+.login-modal-button:hover {
+  opacity: 0.8;
+}
+
+.preview-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.file-input-container {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+}
+
+.image-upload-container {
+  margin-top: 1rem;
+}
+
+.profile-picture-preview {
+  margin-top: 0.5rem;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.error-text {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+.birthday-input{
+  color: #0ab48a !important;
+  width: 35% !important;
+}

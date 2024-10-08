@@ -1,0 +1,68 @@
+.sidebar {
+  box-sizing: border-box;
+  position: fixed;
+  right: 0;
+  top: 60px;
+  height: 100%;
+  width: 250px;
+  background-color: #3e3f3f; 
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.visible {
+  transform: translateX(0); 
+}
+.sidebar-profile-section {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+  background-color: #3e3f3f;
+}
+.sidebar-username-label{
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+.profile-image {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-options {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.menu-options li {
+  margin: 10px 0;
+}
+
+.menu-options a {
+  box-sizing: border-box;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  display: inline-block;
+  width: 100%;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.menu-options a:hover {
+  background-color: #007f61;
+}

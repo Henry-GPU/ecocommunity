@@ -1,0 +1,438 @@
+NO MUESTRA LA IMAGEN DE USUARIO CORRECTA
+
+// src/App.jsx
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
+import LoginRegisterModal from "./components/LoginRegisterModal";
+
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+
+  const handleLogin = (profile) => {
+    setIsAuthenticated(true);
+    setUserProfile(profile);
+    setIsModalOpen(false); // Cierra el modal al iniciar sesión
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserProfile(null);
+  };
+
+  const toggleMode = () => {
+    setIsLogin(prevIsLogin => !prevIsLogin);
+  };
+
+  return (
+    <div className="App">
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        userProfile={userProfile}
+        handleLogout={handleLogout}
+        openLoginModal={() => setIsModalOpen(true)}
+      />
+      {isModalOpen && (
+        <LoginRegisterModal
+          isLogin={isLogin}
+          onClose={() => setIsModalOpen(false)}
+          onLoginSuccess={handleLogin}
+          toggleMode={toggleMode}
+        />
+      )}
+    </div>
+  );
+}
+
+export default App;
+
+
+// src/components/LoginRegisterModal.jsx
+import React, { useState } from "react";
+import axios from 'axios';
+import '../stylesheets/LoginRegisterModal.css';
+
+function LoginRegisterModal({ onClose, isLogin, onLoginSuccess, toggleMode }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [birthday, setBirthday] = useState(""); // Agregar estado para la fecha de nacimiento
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBirthdayInvalid, setIsBirthdayInvalid] = useState(false);
+
+  const handleFileChange = (event) => {
+    setProfilePicture(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    // Validación de edad
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    const isMinor = age < 10 || (age === 10 && monthDifference < 0) || (age === 10 && monthDifference === 0 && today.getDate() < birthDate.getDate());
+
+    if (isMinor) {
+      setIsBirthdayInvalid(true);
+      setIsSubmitting(false);
+      return;
+    } else {
+      setIsBirthdayInvalid(false);
+    }
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    if (name) formData.append("name", name);
+    if (birthday) formData.append("birthday", birthday); // Añade la fecha de cumpleaños
+    if (profilePicture) formData.append("profilePicture", profilePicture);
+
+    try {
+      if (isLogin) {
+        await axios.post("http://localhost:5000/api/login", { email, password });
+        onLoginSuccess(); // Llama a esta función si el inicio de sesión es exitoso
+      } else {
+        await axios.post("http://localhost:5000/api/register", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        onLoginSuccess(); // Llama a esta función después del registro exitoso
+      }
+      onClose();
+    } catch (error) {
+      console.error('Error al procesar la solicitud:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="modal">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2 className="modal-title">{isLogin ? 'Iniciar Sesión' : 'Registrarse'}</h2>
+          <button className="close-button" onClick={onClose}>×</button>
+        </div>
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <label htmlFor="email">Correo Electrónico:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <label htmlFor="password">Contraseña:</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {!isLogin && (
+              <>
+                <label htmlFor="name">Nombre:</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <label htmlFor="birthday">Fecha de Nacimiento:</label>
+                <input
+                  type="date"
+                  id="birthday"
+                  value={birthday}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  required
+                />
+                {isBirthdayInvalid && (
+                  <p className="error-text">Debes tener al menos 10 años para registrarte.</p>
+                )}
+              </>
+            )}
+            {!isLogin && (
+              <div className="image-upload-container">
+                <label htmlFor="profilePicture">Imagen de Perfil:</label>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  onChange={handleFileChange}
+                />
+                {profilePicture && (
+                  <img
+                    src={URL.createObjectURL(profilePicture)}
+                    alt="Vista previa"
+                    className="profile-picture-preview"
+                  />
+                )}
+              </div>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button type="submit" className="submit-button">
+              {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
+            </button>
+            <button type="button" className="toggle-button" onClick={toggleMode}>
+              {isLogin ? 'No tienes una cuenta? Regístrate aquí' : 'Ya tienes cuenta? Inicia sesión aquí'}
+            </button>
+            <button type="button" className="cancel-button" onClick={onClose}>
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default LoginRegisterModal;
+
+import React, { useState, useEffect } from "react";
+import "../stylesheets/Navbar.css";
+import LoginRegisterModal from "./LoginRegisterModal.jsx";
+import axios from 'axios';
+import placeholder from '../images/placeholder.png';
+
+// Configura axios con el baseURL correcto
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5000',
+});
+
+function Navbar() {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [profileImage, setProfileImage] = useState(placeholder);
+  const [isLogin, setIsLogin] = useState(true);
+
+  const handleUserImageClick = () => {
+    if (!isAuthenticated) {
+      setModalOpen(true); // Abre el modal si no hay sesión iniciada
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Realiza la lógica para cerrar sesión aquí
+      // Por ejemplo, puedes eliminar el token de sesión, si lo estás usando
+      setIsAuthenticated(false);
+      setProfileImage(placeholder); // Restablece la imagen a la predeterminada
+      // Puedes también agregar lógica adicional para manejar el cierre de sesión
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
+
+  const fetchProfileImage = async () => {
+    try {
+      const email = 'henrygaleano3568@gmail.com'; // Obtén el correo electrónico del estado o contexto si es necesario
+      const response = await axiosInstance.get('/api/get-profile-image', {
+        params: { email: email }
+      });
+      if (response.data.profileImage) {
+        setProfileImage(`http://localhost:5000/uploads/${response.data.profileImage}`); // Cambia el puerto al del servidor
+        setIsAuthenticated(true);
+      } else {
+        setProfileImage(placeholder);
+      }
+    } catch (error) {
+      console.error('Error al obtener la imagen del perfil:', error);
+      setProfileImage(placeholder);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchProfileImage(); // Cargar la imagen de perfil cuando se monta el componente o se actualiza el estado de autenticación
+    }
+  }, [isAuthenticated]);
+
+  const toggleMode = () => {
+    setIsLogin(prevIsLogin => !prevIsLogin);
+  };
+
+  return (
+    <div>
+      <div className="navbar-container">
+        <div className="logo-container">Ecocommunity</div>
+        <div className="navbar-buttons-container">
+          {isAuthenticated ? (
+            <>
+              <div className="user-image-container">
+                <img className="user-image" src={profileImage} alt="Profile" />
+              </div>
+              <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
+            </>
+          ) : (
+            <button className="login-button" onClick={handleUserImageClick}>
+              Iniciar Sesión
+            </button>
+          )}
+          <div className="menu-button-container">
+            <div className="menu-bar" />
+            <div className="menu-bar" />
+            <div className="menu-bar" />
+          </div>
+        </div>
+      </div>
+
+      {isModalOpen && (
+        <LoginRegisterModal
+          onClose={() => setModalOpen(false)}
+          isLogin={isLogin}
+          onLoginSuccess={() => setIsAuthenticated(true)} // Actualiza el estado después de iniciar sesión
+          toggleMode={toggleMode} // Pasar la función directamente
+        />
+      )}
+    </div>
+  );
+}
+
+export default Navbar;
+
+
+
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const sql = require('mssql');
+const bcrypt = require('bcrypt');
+const cors = require('cors');
+
+const app = express();
+const PORT = 5000;
+
+// Configuración de CORS
+app.use(cors({
+  origin: 'http://localhost:3000' // Permite solicitudes desde este origen
+}));
+
+// Configuración para servir archivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Configuración de multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
+
+// Configuración de la base de datos
+const poolPromise = new sql.ConnectionPool({
+  user: 'sa',
+  password: 'HenryGale2002..',
+  server: 'localhost',
+  database: 'EcoCommunityDB',
+  options: {
+    encrypt: false,
+    trustServerCertificate: true
+  }
+}).connect();
+
+// Middleware para manejar JSON y archivos
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Endpoint para registrar usuarios
+app.post('/api/register', upload.single('profilePicture'), async (req, res) => {
+  const { email, password, name, birthday } = req.body;
+  const profilePicture = req.file ? req.file.filename : null;
+
+  try {
+    const pool = await poolPromise;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Validación de edad
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    if (age < 10) {
+      return res.status(400).send({ message: 'Debes tener al menos 10 años para registrarte.' });
+    }
+
+    const query = `
+      INSERT INTO Usuarios (Nombre, Email, Contraseña, FotoPerfil, FechaNacimiento)
+      VALUES (@name, @email, @password, @profilePicture, @birthday)
+    `;
+    await pool.request()
+      .input('name', sql.NVarChar, name)
+      .input('email', sql.NVarChar, email)
+      .input('password', sql.NVarChar, hashedPassword)
+      .input('profilePicture', sql.NVarChar, profilePicture)
+      .input('birthday', sql.Date, birthDate)
+      .query(query);
+
+    res.status(201).send({ message: 'Usuario registrado con éxito' });
+  } catch (err) {
+    console.error('Error al registrar el usuario:', err);
+    res.status(500).send({ message: 'Error al registrar el usuario' });
+  }
+});
+
+// Endpoint para iniciar sesión
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input('email', sql.NVarChar, email)
+      .query('SELECT * FROM Usuarios WHERE Email = @email');
+
+    const user = result.recordset[0];
+    if (user && await bcrypt.compare(password, user.Contraseña)) {
+      res.status(200).send({ message: 'Inicio de sesión exitoso' });
+    } else {
+      res.status(400).send({ message: 'Credenciales incorrectas' });
+    }
+  } catch (err) {
+    console.error('Error al iniciar sesión:', err);
+    res.status(500).send({ message: 'Error al iniciar sesión' });
+  }
+});
+
+// Endpoint para obtener la imagen del perfil
+app.get('/api/get-profile-image', async (req, res) => {
+  const email = req.query.email;
+
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input('email', sql.NVarChar, email)
+      .query('SELECT FotoPerfil FROM Usuarios WHERE Email = @email');
+
+    const user = result.recordset[0];
+    if (user) {
+      res.status(200).send({ profileImage: user.FotoPerfil });
+    } else {
+      res.status(404).send({ message: 'Usuario no encontrado' });
+    }
+  } catch (err) {
+    console.error('Error al obtener la imagen del perfil:', err);
+    res.status(500).send({ message: 'Error al obtener la imagen del perfil' });
+  }
+});
+
+// Inicia el servidor
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
