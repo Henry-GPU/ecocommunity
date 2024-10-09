@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "../stylesheets/CreatePostModal.css";
+import url from "./serveo";
 
 function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
     const [postImage, setPostImage] = useState(null);
@@ -59,9 +60,9 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
             formData.append("comment", comment);
             formData.append("location", location); // Envía la ubicación automáticamente
             
-            await axios.post("https://b1b4-181-174-106-75.ngrok-free.app/api/posts", formData, {
+            await axios.post(`${url}/api/posts`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
                 }
             });
             refreshPosts();

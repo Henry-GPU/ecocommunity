@@ -9,9 +9,7 @@ const sql = require('mssql'); // Asegúrate de tener esto al principio del archi
 const app = express();
 const PORT = 5000;
 
-app.use(cors({
-  origin: ['http://192.168.0.3:3000', 'http://localhost:3000'],
-}));
+app.use(cors());
 
 app.use('/uploads', express.static('uploads'));
 app.use('/icons', express.static('icons'));

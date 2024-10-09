@@ -5,9 +5,10 @@ import '../stylesheets/Post.css';
 import axios from "axios";
 import placeholder from '../images/placeholder.png';
 import L, { Handler } from 'leaflet';
+import url from './serveo';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://b1b4-181-174-106-75.ngrok-free.app',
+  baseURL: url
 });
 
 function Post({ userEmail, name, time, comment, postImage, location, userAuthEmail, post }) {
@@ -20,7 +21,7 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
   
 
     const customIcon = L.icon({
-      iconUrl: "https://b1b4-181-174-106-75.ngrok-free.app/icons/location.png",
+      iconUrl: `${url}/icons/location.png`,
       iconSize: [25, 30], 
       iconAnchor: [12, 41] 
     });
@@ -33,7 +34,7 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
           params: { email: email }
         });
         if (response.data.profileImage) {
-          setUserImage(`https://b1b4-181-174-106-75.ngrok-free.app/uploads/${response.data.profileImage}`);
+          setUserImage(`${url}/uploads/${response.data.profileImage}`);
         } else {
           setUserImage(placeholder);
         }
@@ -66,11 +67,23 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
   const handleLike = async () =>{
     try {
       if (hasLiked) {
-        const response = await axios.post(`https://b1b4-181-174-106-75.ngrok-free.app/api/posts/${post.Id}/unlike`, { email: userAuthEmail });
+        const response = await axios.post(`${url}/api/posts/${post.Id}/unlike`, 
+          { email: userAuthEmail },
+          {
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            }
+          });
         setLikesCount(likesCount - 1);
         setHasLiked(false);
       } else {
-        const response = await axios.post(`https://b1b4-181-174-106-75.ngrok-free.app/api/posts/${post.Id}/like`, { email: userAuthEmail });
+        const response = await axios.post(`${url}/api/posts/${post.Id}/like`, 
+          { email: userAuthEmail },
+          {
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            }
+          });
         setLikesCount(likesCount + 1);
         setHasLiked(true);
       }
@@ -82,7 +95,13 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
   const handleVerify = async () => {
     if(hasVerified) return;
     try {
-      const response = await axios.post(`https://b1b4-181-174-106-75.ngrok-free.app/api/posts/${post.Id}/verify`, { email: userAuthEmail });
+      const response = await axios.post(`${url}/api/posts/${post.Id}/verify`, 
+        { email: userAuthEmail },
+        {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
       setHasVerified(true);
       setVerificationsCount(verificationsCount + 1);
     } catch (error) {
@@ -113,7 +132,7 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
         {isVerified() && (
           <div className="verification-container">
             <p className="verification-description">Problema resuelto</p>
-            <img className="verification-icon" src="https://b1b4-181-174-106-75.ngrok-free.app/icons/verify.png" alt="verification" />
+            <img className="verification-icon" src={`${url}/icons/verify.png`} alt="verification" />
           </div>
         )}
       </div>
@@ -122,7 +141,7 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
         <div className="post-location-button" 
         onClick={() => setModalVisible(true)}>
           <span>Ubicación</span>
-          <img className="location-icon" src="https://b1b4-181-174-106-75.ngrok-free.app/icons/location.png"/>
+          <img className="location-icon" src={`${url}/icons/location.png`}/>
         </div>
       </div>
       
@@ -150,9 +169,9 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
         </div>
       )}
 
-      <img className="post-image" src={`https://b1b4-181-174-106-75.ngrok-free.app/uploads/${postImage}`} alt="Post" />
+      <img className="post-image" src={`${url}/uploads/${postImage}`} alt="Post" />
       <div className="buttons-post-container">
-        <img src={hasLiked ? "https://b1b4-181-174-106-75.ngrok-free.app/icons/like.png": "https://b1b4-181-174-106-75.ngrok-free.app/icons/nolike.png"} 
+        <img src={hasLiked ? `${url}/icons/like.png`: `${url}/icons/nolike.png`} 
         alt="Like" className="like-button" 
         onClick={handleLike} />
         <label className="likes-count">{likesCount}{likesCount === 1 ? ' Like' : ' Likes'}</label>

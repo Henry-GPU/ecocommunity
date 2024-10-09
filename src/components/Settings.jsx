@@ -3,6 +3,7 @@ import axios from "axios";
 import "../stylesheets/Settings.css";
 import placeholder from '../images/placeholder.png';
 import { Link, useNavigate } from "react-router-dom";
+import url from "./serveo";
 
 function Settings({ isOpen, onClose, currentProfileImage, currentUsername, currentEmail, onUpdateProfile }) {
   const [username, setUsername] = useState(currentUsername);
@@ -26,11 +27,11 @@ function Settings({ isOpen, onClose, currentProfileImage, currentUsername, curre
     try {
       const email = currentEmail;
       if (email) {
-        const response = await axios.get('https://b1b4-181-174-106-75.ngrok-free.app/api/get-profile-image', {
+        const response = await axios.get(`${url}/api/get-profile-image`, {
           params: { email: email }
         });
         if (response.data.profileImage) {
-          setProfileImagePreview(`https://b1b4-181-174-106-75.ngrok-free.app/uploads/${response.data.profileImage}`);
+          setProfileImagePreview(`${url}/uploads/${response.data.profileImage}`);
         } else {
           setProfileImagePreview(placeholder);
         }
@@ -47,7 +48,7 @@ function Settings({ isOpen, onClose, currentProfileImage, currentUsername, curre
 
   const fetchUserId = useCallback(async () => {
     try {
-      const response = await axios.get('https://b1b4-181-174-106-75.ngrok-free.app/api/get-user-id', {
+      const response = await axios.get(`${url}/api/get-user-id`, {
         params: { email: currentEmail }
       });
       return response.data.userId; // Devuelve el ID del usuario
@@ -77,7 +78,7 @@ function Settings({ isOpen, onClose, currentProfileImage, currentUsername, curre
     if (password) formData.append("password", password);
 
     try {
-      await axios.put(`https://b1b4-181-174-106-75.ngrok-free.app/api/update-profile/${userId}`, formData, {
+      await axios.put(`${url}/api/update-profile/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -110,7 +111,7 @@ function Settings({ isOpen, onClose, currentProfileImage, currentUsername, curre
                 className="profile-image-preview"
               />
               <img 
-                src="https://b1b4-181-174-106-75.ngrok-free.app/icons/edit.png"
+                src={`${url}/icons/edit.png`}
                 alt="Edit image"
                 className="edit-icon"
               />

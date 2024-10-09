@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import "../stylesheets/CreatePost.css"
 import axios from "axios";
 import placeholder from '../images/placeholder.png';
+import url from "./serveo";
 
 const axiosInstance = axios.create({
-    baseURL: 'https://b1b4-181-174-106-75.ngrok-free.app',
+    baseURL: url,
 });
 
 function CreatePost ({isAuthenticated, openCreatePostModal, userProfile}){
@@ -15,10 +16,9 @@ function CreatePost ({isAuthenticated, openCreatePostModal, userProfile}){
           const email = userProfile?.email;
           if (email) {
             const response = await axiosInstance.get('/api/get-profile-image', {
-              params: { email: email }
-            });
+              params: { email: email }});
             if (response.data.profileImage) {
-              setProfileImage(`https://b1b4-181-174-106-75.ngrok-free.app/uploads/${response.data.profileImage}`);
+              setProfileImage(`${url}/uploads/${response.data.profileImage}`);
             } else {
               setProfileImage(placeholder);
             }

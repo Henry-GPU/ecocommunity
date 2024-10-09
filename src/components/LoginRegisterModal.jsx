@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import '../stylesheets/LoginRegisterModal.css';
+import url from "./serveo";
 
 function LoginRegisterModal({ onClose, isLogin, onLoginSuccess, toggleMode }) {
   const [email, setEmail] = useState("");
@@ -43,12 +44,13 @@ function LoginRegisterModal({ onClose, isLogin, onLoginSuccess, toggleMode }) {
 
     try {
       if (isLogin) {
-        const response = await axios.post("https://b1b4-181-174-106-75.ngrok-free.app/api/login", { email, password });
+        const response = await axios.post(`${url}/api/login`, 
+          { email, password },);
         onLoginSuccess({ email, profileImage: response.data.profileImage }); 
       } else {
-        await axios.post("https://b1b4-181-174-106-75.ngrok-free.app/api/register", formData, {
+        await axios.post(`${url}/api/register`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
           }
         });
         onLoginSuccess({ email, profileImage: formData.get('profilePicture') }); 
