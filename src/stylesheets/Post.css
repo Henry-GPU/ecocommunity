@@ -17,7 +17,7 @@
     display: flex;
     justify-content: end;
     align-items: center;
-    margin: 10px;
+    margin: 0;
     width: 40%;
 }
 .verification-icon{
@@ -29,7 +29,7 @@
     display: flex;
     justify-content: end;
     align-items: center;
-    font-size: 13px;
+    font-size: 0.69rem;
     color: #00DBA6;
     margin: 0;
 }
@@ -62,12 +62,12 @@
 }
 .user-name{
     margin: 0;
-    font-size: 15px;
+    font-size: 0.8rem;
     font-weight: bold;
     color: #fff;
 }
 .post-time{
-    font-size: 12px;
+    font-size: 0.69rem;
     color: #fff;
 }
 .post-location-button{

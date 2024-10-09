@@ -42,7 +42,7 @@ function CreatePost ({isAuthenticated, openCreatePostModal, userProfile}){
     
     style={isAuthenticated ? {display: 'flex'} : {display: 'none'}}>
         <div className="create-post-user-image-container">
-            <img className="pointer"src={profileImage}></img>
+            <img className="pointer"src={profileImage} alt="user"></img>
         </div>
         <div className="create-post-button-container">
             <div className="create-post-button pointer" onClick={openCreatePostModal}>

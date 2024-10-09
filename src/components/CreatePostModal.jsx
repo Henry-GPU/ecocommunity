@@ -83,8 +83,8 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
     const adjustTextareaHeight = () => {
         const textarea = textareaRef.current;
         if (textarea) {
-            textarea.style.height = "auto"; 
-            textarea.style.height = `${textarea.scrollHeight}px`; 
+            textarea.style.height = "50px"; 
+            textarea.style.height = `${textarea.scrollHeight * 1}px`; 
         }
     };
 

@@ -1,14 +1,15 @@
 .create-post-modal-container{
     box-sizing:border-box;
-    width: 500px;
+    width: 600px;
     display: flex;
     align-items: end;
     height: auto;
     margin: 10px 0;
     background-color: #505050;
     border-radius: 10px;
-    max-width: 800px;
+    max-width: 95%;
     flex-direction: column;
+    max-height: 90%;
 }
 .create-post-modal-form{
     width: 100%;
@@ -22,7 +23,7 @@
 }
 .create-post-modal-comment{
     text-align: left;
-    min-height: 100px;
+    min-height: 50px;
     height: auto;
     background-color: rgb(39, 39, 39);
     width: 100%;
@@ -38,12 +39,13 @@
     width: 100%;
     justify-content: center;
     padding: 10px 20px;
-
+    max-height: 320px;
 }
 .create-post-modal-image-preview{
     width: 100%;
     object-fit: cover;
     border: #00DBA6 solid 2px;
+    height: auto;
 }
 
 .create-post-modal-buttons-container{
@@ -70,7 +72,7 @@
 
 .post-modal-button{
     width: auto;
-    margin: 10px 20px;
+    margin: 10px 20px 15px 20px;
     padding: 10px 15px;
     border-radius: 15px;
     background-color: #0ab48a;

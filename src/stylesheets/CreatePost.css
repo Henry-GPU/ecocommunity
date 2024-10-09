@@ -9,7 +9,7 @@
     margin: 10px 0 0 0;
     background-color: #505050;
     max-width: 600px;
-    padding: 20px;
+    padding: 15px 20px;
     border-radius: 5px;
 }
 .create-post-user-image-container{
@@ -23,7 +23,7 @@
 }
 .create-post-button{
     box-sizing: border-box;
-    height: 60px;
+    height: 50px;
     width: 100%;
     background-color: rgb(39, 39, 39);
     border: solid #00DBA6 2px;
@@ -32,7 +32,7 @@
     display: flex;
     color: #717171;
     padding: 10px;
-    font-size: 20px;
+    font-size: 1rem;
 }
 .create-post-user-image-container img{
     width: 60px;
