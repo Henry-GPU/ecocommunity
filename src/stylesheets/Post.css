@@ -1,8 +1,9 @@
-.post-container{
+.post-content{
+    position: relative;
     width: 100%;
     max-width: 600px;
     height: auto;
-    background-color: #505050;
+    background-color: #2c2c2c;
     color: #fff;
     margin: 5px 0;
     padding: 0;
@@ -12,13 +13,14 @@
     border-radius: 5px;
     flex-wrap: wrap;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 0;
 }
 .verification-container{
+    flex-grow: 1;
     display: flex;
     justify-content: end;
     align-items: center;
-    margin: 0;
-    width: 40%;
+    height: auto;
 }
 .verification-icon{
     height: 20px;
@@ -53,6 +55,7 @@
     border: solid 2px #0ab48a;
 }
 .user-info-post{
+    box-sizing: border-box;
     display: flex;
     margin: 10px;
     height: 20%;
@@ -61,20 +64,46 @@
     color: #fff;
 }
 .user-name{
+    box-sizing: border-box;
     margin: 0;
     font-size: 0.8rem;
     font-weight: bold;
     color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+.post-community{
+    color: #0ab48a;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+}
+.post-community span{
+    color: #fff;
+    font-weight: 400;
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+}
+
+.user-name p{
+    display: flex;
+    flex-grow: 1;
+    margin: 0;
+}
+
 .post-time{
     font-size: 0.69rem;
     color: #fff;
 }
 .post-location-button{
+    flex-grow: 0;
     width: auto;
     max-width: 100px;
     padding: 7px;
-    margin: 0 0 20px 20px;
+    margin: 0;
     border: none;
     border-radius: 5px;
     background-color: #0ab48a;
@@ -85,7 +114,7 @@
     align-items: center;
     font-size: 15px;
     font-weight: 400;
-    z-index: 2;
+    z-index: 0;
 }
 .post-location-button:hover{
     background-color: #007f61;
@@ -97,6 +126,7 @@
 }
 .location-icon{
     height: 20px;
+    filter: saturate(3);
 }
 .post-comment{
     width: 100%;
@@ -111,10 +141,13 @@
     height: 60%;
     width: 100%;
 }
-.map-button-cantainer{
+.map-button-container{
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    align-items: center;
+    height: auto;
+    margin:0 20px 20px 20px;
 }
 .map-button{
     width: 80px;
@@ -152,16 +185,125 @@
     font-size: 13px;
 }
 .map-modal-content{
+    top: 50%;
     box-sizing: border-box;
     display:flex;
-    background-color: #363636; 
+    background-color: #2c2c2c; 
     color: #fff; 
     border-radius: 8px;
     width: 90%;
     max-width: 90%; 
+    max-height: 800px;
     padding: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    position: relative;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, -50%);
     justify-content: center;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.user-emblem{
+    width: 1.1rem;
+    margin-left: 0.5rem;
+    
+}
+.emblem{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    z-index: 0;
+}
+.emblem-name{
+    visibility: hidden;
+    width: 75px;
+    background-color: rgba(0, 0, 0, 0.3);
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -38px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.6rem;
+}
+
+.emblem:hover .emblem-name{
+    visibility: visible;
+    opacity: 1;
+    font-size: 0.6rem;
+}
+.menu-post{
+    top: 5px;
+    display: flex;
+    position: absolute;
+    right: 5px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    border-radius: 5px;
+    background-color: none;
+    height: 40px;
+}
+
+.menu-post:hover{
+    background-color: #007f61;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.user-emblems-container{
+    display: flex;
+    flex-grow: 2;
+}
+
+.post-action-message-container{
+    box-sizing: border-box;
+    margin-top: 10px;
+    flex-direction: column;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #2c2c2c;
+    border-radius: 5px;
+    padding: 20px;
+}
+.post-action-message-title{
+    text-align: center;
+    color: #fff;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+}
+.post-action-message-description{
+    text-align: center;
+    color: #fff;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+}
+
+.post-action-message-button-container{
+    margin-top: 10px;
+    padding: 0;
+}
+.post-action-message-button{
+    margin: 0;
+    padding: 10px;
+    background-color: #0ab48a;
+    color: #fff;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+
+}
+.post-action-message-icon{
+    width: 5rem;
+    height: 5rem;
 }

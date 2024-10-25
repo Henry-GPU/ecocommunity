@@ -1,0 +1,111 @@
+.admin-post-info-container{
+    padding: 40px 0 0 0;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.admin-post-info-content{
+    max-width: 500px;
+    min-width: 300px;
+    background-color: #2c2c2c;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    border-radius: 5px;
+    border: #0ab48a 2px solid;
+    box-shadow: rgba(0,0,0,.5) 0px 0px 10px 0px;
+}
+.admin-user-post-info-username{
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+}
+.admin-user-post-info-photo{
+    margin-top: 30px;
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.admin-post-info{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 0;
+}
+.admin-user-post-info-photo img{
+    width: 5rem;
+    height: 5rem;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.admin-post-info-photo{
+    width: 20rem;
+    height: 20rem;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.admin-post-info li{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    color: #0ab48a;
+}
+.admin-post-info-fact{
+    font-size: 0.8rem;
+    margin-left: 10px;
+    color: #fff;
+}
+
+.admin-post-info-roles-select{
+    height: 2rem;
+    width: 7rem;
+    border: #0ab48a solid 2px;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #0ab48a;
+}
+
+.admin-post-info-actions-container{
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 50%;
+}
+.change-role-title{
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    font-size: 0.9rem;
+
+}
+.admin-post-info-roles-select option{
+    background-color: #3e3f3f;
+    color: #8a8888;
+  }
+
+  .change-status-button{
+    background-color: #f56060;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .change-role-button{
+    font-weight: bold;
+    background-color: #0ab48a;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  

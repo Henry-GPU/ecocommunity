@@ -5,7 +5,7 @@ import placeholder from '../images/placeholder.png';
 import { Link, useNavigate } from "react-router-dom";
 import url from "./serveo";
 
-function Settings({ isOpen, onClose, currentProfileImage, currentUsername, currentEmail, onUpdateProfile }) {
+function Settings({ isOpen, currentProfileImage, currentUsername, currentEmail, onUpdateProfile }) {
   const [username, setUsername] = useState(currentUsername);
   const [email, setEmail] = useState(currentEmail);
   const [password, setPassword] = useState("");

@@ -1,27 +1,29 @@
 import React from "react";
 import Post from './Post';
 
-function Feed({posts, userEmail}){
+function Feed({posts, userEmail, userRole}){
     return (
         <div>
             {posts.map((post) => (
                 <Post
                     post={post}
                     key={post.Id} 
-                    userEmail={post.UserEmail}
-                    name={post.UserName}
+                    userEmail={post.author.Email}
+                    name={post.author.User_Name}
+                    postCommunity={post.Community}
+                    userRole={userRole}
                     time={new Date(post.CreatedAt).toLocaleString(
                         "es-GT", {
-                            timeZone: "America/Guatemala",
+                            timeZone: "UTC",
                             month: "long",
                             day: "numeric",
                             hour: "numeric",
                             minute: "2-digit",
-                            hour12: false,
+                            hour12: true,
 
                     })}
                     comment={post.Comment}
-                    postImage={post.PostImage}
+                    postImage={post.image}
                     location={
                         typeof post.Location === "string"
                         ?   {
@@ -34,6 +36,8 @@ function Feed({posts, userEmail}){
                             }
                     }
                     userAuthEmail={userEmail}
+                    likesCount={post.likes}
+                    verificationsCount={post.verifications}
                 />
             ))}
         </div>     

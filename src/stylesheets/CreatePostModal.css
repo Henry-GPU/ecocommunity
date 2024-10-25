@@ -79,3 +79,12 @@
     color: #fff;
     border: none;
 }
+
+.create-post-modal-form select{
+    width: 12rem;
+    background-color: #181818;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}

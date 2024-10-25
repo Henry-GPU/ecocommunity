@@ -6,20 +6,32 @@ import axios from "axios";
 import placeholder from '../images/placeholder.png';
 import L, { Handler } from 'leaflet';
 import url from './serveo';
+import PostMenu from './PostMenu';
 
 const axiosInstance = axios.create({
   baseURL: url
 });
 
-function Post({ userEmail, name, time, comment, postImage, location, userAuthEmail, post }) {
-  const [likesCount, setLikesCount] = useState(JSON.parse(post.Likes).length);
-  const [verificationsCount, setVerificationsCount] = useState(JSON.parse(post.Verifications).length);
+function Post({userRole, postCommunity, userEmail, name, time, comment, postImage, location, userAuthEmail, post }) {
+  const [likesCount, setLikesCount] = useState();
+  const [verificationsCount, setVerificationsCount] = useState();
   const [hasLiked, setHasLiked] = useState(false);
   const [hasVerified, setHasVerified] = useState(false);
   const [userImage, setUserImage] = useState(placeholder);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isPostMenuVisible, setPostMenuVisible] = useState(false);
+  const [hasHidden, setHasHidden] = useState(false);
+  const [hasDisabled, setHasDisabled] = useState(false);
+  const [userAuthId, setUserAuthId] = useState(0);
   
-
+  const toglePostMenu = () =>{
+    if(isPostMenuVisible){
+      setPostMenuVisible(false);
+    }
+    else{
+      setPostMenuVisible(true);
+    }
+  }
     const customIcon = L.icon({
       iconUrl: `${url}/icons/location.png`,
       iconSize: [25, 30], 
@@ -44,46 +56,67 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
       setUserImage(placeholder);
     }
   }, [userEmail]);
+
   useEffect(() => {
+    setPostMenuVisible(false);
     setHasLiked(false);
     setHasVerified(false);
-}, [userAuthEmail]);
+  }, [userAuthEmail]);
 
   useEffect(() => {
-    const userLikes = JSON.parse(post.Likes);
-    const userVerifications = JSON.parse(post.Verifications);
 
-    setHasLiked(userLikes.includes(userAuthEmail));
-    setHasVerified(userVerifications.includes(userAuthEmail));
+    const fetchPostData = async () =>{
+      try {
+        const responseLike = await axiosInstance.get(`/api/check-like/${post.Id}`, 
+          {params: {email: userAuthEmail}}
+        );
+        setHasLiked(responseLike.data.hasLiked);
+        const responseVerification = await axiosInstance.get(`/api/check-verification/${post.Id}`, 
+          {params: {email: userAuthEmail}}
+        );
+        setHasVerified(responseVerification.data.hasVerified);
+      } catch (error) {
+        
+      }
+    }
 
-    setLikesCount(userLikes.length);
-    setVerificationsCount(userVerifications.length);
     
+    
+    fetchPostData();
+    setLikesCount(post.likes);
+    setVerificationsCount(post.verifications);
     fetchUserImage();
-  }, [fetchUserImage, post.Likes, post.Verifications, userAuthEmail]);
+    fetchUserAuthId();
+    setHasHidden(false);
+    setHasDisabled(false);
+  }, [fetchUserImage, userAuthEmail]);
 
+  const fetchUserAuthId = async () => {
 
+    try {
+      const responseUserId = await axiosInstance.get('api/get-user-id', {
+        params: {
+          email: userAuthEmail
+        }
+      });
+      const userId = responseUserId.data.userId;
+      setUserAuthId(userId);
+    } catch (error) {
+      
+    }
+   
+  };
 
   const handleLike = async () =>{
     try {
       if (hasLiked) {
-        const response = await axios.post(`${url}/api/posts/${post.Id}/unlike`, 
-          { email: userAuthEmail },
-          {
-            headers: {
-              'ngrok-skip-browser-warning': 'true'
-            }
-          });
+        const response = await axios.post(`${url}/api/unlike/${post.Id}`, 
+          { email: userAuthEmail },);
         setLikesCount(likesCount - 1);
         setHasLiked(false);
       } else {
-        const response = await axios.post(`${url}/api/posts/${post.Id}/like`, 
-          { email: userAuthEmail },
-          {
-            headers: {
-              'ngrok-skip-browser-warning': 'true'
-            }
-          });
+        const response = await axios.post(`${url}/api/like/${post.Id}`, 
+          { email: userAuthEmail },);
         setLikesCount(likesCount + 1);
         setHasLiked(true);
       }
@@ -95,11 +128,10 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
   const handleVerify = async () => {
     if(hasVerified) return;
     try {
-      const response = await axios.post(`${url}/api/posts/${post.Id}/verify`, 
+      const response = await axios.post(`${url}/api/verification/${post.Id}`, 
         { email: userAuthEmail },
         {
           headers: {
-            'ngrok-skip-browser-warning': 'true'
           }
         });
       setHasVerified(true);
@@ -117,24 +149,80 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
       console.log(false);
       return false;
     }
-  }
+  };
+
+  const toggleHidePost = async () => {
+    const email = userAuthEmail;
+    const postId = post.Id;
+    const hide = !hasHidden;
+    try {
+      
+        const response = await axios.post(`${url}/api/hide-post` , 
+          {email, postId, hide});
+          if (hide){
+            setHasHidden(true);
+          }
+          else{
+            setHasHidden(false);
+          }   
+    } 
+    catch (error) {
+    }
+  };
+
+  const toggleDisablePost = async () => {
+    const disable = !hasDisabled;
+    const id = post.Id;
+    try {
+      const response = await axios.put(`${url}/api/post-change-status` , 
+        {id: id, status: !disable});
+      if (disable){
+        setHasDisabled(true);
+      }
+      else{
+        setHasDisabled(false);
+      }   
+    } 
+    catch (error) {
+    }
+  };
 
   return (
-    <div className="post-container">
+    <div className='post-container'>
+    {(!hasHidden && !hasDisabled) && <div className="post-content">
+      <div onClick={toglePostMenu} className="menu-post">⋯</div>
+      {
+        isPostMenuVisible &&
+        <PostMenu
+          setPostMenuVisible={setPostMenuVisible}
+          userPostId={post.author.Id}
+          userAuthId={userAuthId}
+          userRole={userRole}
+          hidePost={toggleHidePost}
+          disablePost={toggleDisablePost}
+        />
+      }
+      
       <div className="header-post-container">
         <div className="user-post-container">
           <img className="user-post-image" src={userImage} alt="User" />
           <div className="user-info-post">
-            <p className="user-name">{name}</p>
+            <div className="user-name">
+              <p>{name}</p>
+              <div className="user-emblems-container">
+                  {(post.author.Role === 'Superusuario' || post.author.Role === 'Administrador') &&(
+                    <div className="emblem">
+                      <img src={`${url}/icons/admin-emblem.png`} className="user-emblem"/> 
+                      <div className="emblem-name">{post.author.Role}</div>
+                    </div>
+                    )
+                  }
+              </div>
+            </div>
+            <div className='post-community'>{(postCommunity)&&<div><span>en </span>{postCommunity}</div>}</div>
             <p className="post-time">{time}</p>
           </div>
         </div>
-        {isVerified() && (
-          <div className="verification-container">
-            <p className="verification-description">Problema resuelto</p>
-            <img className="verification-icon" src={`${url}/icons/verify.png`} alt="verification" />
-          </div>
-        )}
       </div>
       <p className="post-comment">{comment}</p>
       <div className="map-button-container">
@@ -142,9 +230,15 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
         onClick={() => setModalVisible(true)}>
           <span>Ubicación</span>
           <img className="location-icon" src={`${url}/icons/location.png`}/>
-        </div>
+        </div>  
+        {isVerified() && (
+          <div className="verification-container">
+            <p className="verification-description">Problema resuelto</p>
+            <img className="verification-icon" src={`${url}/icons/verify.png`} alt="verification" />
+          </div>
+        )}   
       </div>
-      
+       
       {modalVisible && (
         <div className="modal">
           <div className="map-modal-content">
@@ -152,7 +246,7 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
               <button className="close-button" onClick={() => setModalVisible(false)}>×</button>
             </div>
             <div className="map-container">
-              <MapContainer center={[location.lat, location.lng]} zoom={25} style={{ height: "600px", width: "100%" }}>
+              <MapContainer center={[location.lat, location.lng]} zoom={25} style={{ height: "500px", width: "100%" }}>
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -178,6 +272,26 @@ function Post({ userEmail, name, time, comment, postImage, location, userAuthEma
         <button className="verify-button" onClick={handleVerify} style={hasVerified ? {fontWeight: 600} : {fontWeight: 500}}>{hasVerified ? '✓' : 'Verificar'}</button>
       </div>
     </div>
+  }
+  {hasHidden && 
+    <div className='post-action-message-container'>
+      <span className='post-action-message-title'>Ocultaste esta publicación</span>
+      <img src={`${url}/icons/hide.svg`} className='post-action-message-icon'></img>
+      <span className='post-action-message-description'>No volverás a ver esta publicación</span>
+      <div className='post-action-message-button-container'>
+        <button className='post-action-message-button' onClick={toggleHidePost} >Deshacer</button>
+      </div>
+    </div>}
+    {hasDisabled && 
+    <div className='post-action-message-container'>
+      <span className='post-action-message-title'>Eliminaste esta publicación</span>
+      <img src={`${url}/icons/hide.svg`} className='post-action-message-icon'></img>
+      <span className='post-action-message-description'>La publicación fue eliminada y ya no será mostrada a otros usuarios.</span>
+      <div className='post-action-message-button-container'>
+        <button className='post-action-message-button' onClick={toggleDisablePost} >Deshacer</button>
+      </div>
+    </div>}
+  </div>
   );
 }
 

@@ -7,51 +7,30 @@ import placeholder from '../images/placeholder.png';
 import "../stylesheets/Sidebar.css"
 import Sidebar from "./Sidebar.jsx";
 import url from "./serveo.js";
+import { Link } from "react-router-dom";
 
 const axiosInstance = axios.create({
   baseURL: url,
 });
 
-function Navbar({ isAuthenticated, userProfile, handleLogout, openLoginModal, userName, handleOpenSettings }) {
+function Navbar({ isAuthenticated, profileImage, fetchProfileImage, handleLogout, openLoginModal, userName, handleOpenSettings, userRole }) {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState(placeholder);
   const [isLogin, setIsLogin] = useState(true);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
 
   const handleUserImageClick = () => {
     if (isAuthenticated) {
       if (isMobile) {
-        setIsSidebarVisible(prev => !prev);
+        setIsMenuVisible(prev => !prev);
       }
     } else {
       setModalOpen(true);
     }
   };
 
-  const fetchProfileImage = useCallback(async () => {
-    try {
-      const email = userProfile?.email;
-      if (email) {
-        const response = await axiosInstance.get('/api/get-profile-image', {
-          params: { email: email }
-        });
-        if (response.data.profileImage) {
-          setProfileImage(`${url}/uploads/${response.data.profileImage}`);
-        } else {
-          setProfileImage(placeholder);
-        }
-      }
-    } catch (error) {
-      console.error('Error al obtener la imagen del perfil:', error);
-      setProfileImage(placeholder);
-    }
-  }, [userProfile?.email]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchProfileImage();
-    }
+  useEffect(() => { 
+    if (isAuthenticated) fetchProfileImage(); 
   }, [isAuthenticated, fetchProfileImage]);
 
   useEffect(() => {
@@ -63,21 +42,32 @@ function Navbar({ isAuthenticated, userProfile, handleLogout, openLoginModal, us
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if (isMenuVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMenuVisible]);
+
   const toggleMode = () => {
     setIsLogin(prevIsLogin => !prevIsLogin);
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarVisible(prev => !prev);
+  const toggleMenu = () => {
+    setIsMenuVisible(prev => !prev);
   };
 
   return (
     <div>
       <div className="navbar-container">
-        <div className="logo-container">Ecocommunity</div>
+        <Link to="/" className="logo-container">Ecocommunity</Link>
         <div className="navbar-buttons-container">
           {isAuthenticated ? (
-            <>
               <div className="user-image-container">
                 <img
                   className="user-image"
@@ -85,15 +75,7 @@ function Navbar({ isAuthenticated, userProfile, handleLogout, openLoginModal, us
                   alt="Profile"
                   onClick={handleUserImageClick}
                 />
-              </div>
-              {!isMobile && (
-                <div className="menu-button-container" onClick={toggleSidebar}>
-                  <div className="menu-bar" />
-                  <div className="menu-bar" />
-                  <div className="menu-bar" />
-                </div>
-              )}
-            </>
+        </div>
           ) : (
             <button
               className="login-button"
@@ -105,26 +87,16 @@ function Navbar({ isAuthenticated, userProfile, handleLogout, openLoginModal, us
         </div>
       </div>
 
-      {isMobile && isSidebarVisible && (
+      {isMobile && isMenuVisible &&(
         <Menu
+          userRole={userRole}
           profileImage={profileImage}
-          onClose={() => setIsSidebarVisible(false)}
+          onClose={() => setIsMenuVisible(false)}
           onLogout={handleLogout}
           userName={userName}
           handleOpenSettings={handleOpenSettings}
         />
       )}
-
-      {!isMobile && isSidebarVisible && (
-       <Sidebar
-       profileImage={profileImage}
-       onClose={()=> setIsSidebarVisible(false)}
-       onLogout={handleLogout}
-       userName={userName}
-       handleOpenSettings={handleOpenSettings}
-       />
-      )}
-
       {isModalOpen && (
         <LoginRegisterModal
           onClose={() => setModalOpen(false)}

@@ -2,41 +2,61 @@
 import React from 'react';
 import '../stylesheets/Menu.css';
 import { Link } from 'react-router-dom';
+import '../stylesheets/ToolBar.css'
+import url from './serveo';
 
-function Menu({ profileImage, onClose, onLogout, userName, handleOpenSettings }) {
+function Menu({ profileImage, onClose, onLogout, userName, handleOpenSettings, userRole }) {
   return (
-    <div className="menu-container">
+    <div className="mobile-toolbar-container">
       <button className="back-button" onClick={onClose}>←</button>
-      <div className="profile-section">
-        <img
-          className="profile-image"
-          src={profileImage}
-          alt="Profile"
-        />
-        <label className="username-label">{userName}</label>
-      </div>
-      <ul className="menu-options">
-        <li><a href="">Perfil</a></li>
-        <li>
-          <a 
-            href=""
-            onClick={() => {onClose();}}>           
-            <Link
-              to="/settings">
-                Ajustes
-            </Link>
-          </a></li>
-        <li><a href="">Ayuda</a></li>
-        <li><a 
-          href="" 
+      <div className='toolbar-buttons-container'>
+        <Link to='/'
+          className='mobile-profile-toolbar-section'
           onClick={() => {
-            onLogout();
             onClose();
-            }
-          }>
-            <Link to="/">Cerrar Sesión</Link>
-          </a></li>
-      </ul>
+            }}>
+          <img className='mobile-profile-toolbar-image' src={`${profileImage}`}></img>
+          <p className='mobile-profile-toolbar-username'>{userName}</p>
+        </Link>
+        {(userRole === 1 || userRole === 2) && (
+            <Link 
+              className='toolbar-button'
+              to="/admin-dashboard" 
+              onClick={() => {
+              onClose();
+              }}>
+              <img className='toolbar-icon' src={`${url}/icons/admin-dashboard.png`}></img>
+              <p>Admin Dashboard</p>
+            </Link>)}
+            <Link 
+              className='toolbar-button'
+              to="/settings" 
+              onClick={() => {
+              onClose();
+              }}>
+              <img className='toolbar-icon' src={`${url}/icons/settings.png`}></img>
+              <p>Ajustes de perfil</p>
+            </Link>
+            <Link 
+              className='toolbar-button'
+              to="/communities" 
+              onClick={() => {
+              onClose();
+              }}>
+              <img className='toolbar-icon' src={`${url}/icons/communities.png`}></img>
+              <p>Comunidades</p>
+            </Link>
+            <Link 
+              className='toolbar-button'
+              to="/" 
+              onClick={() => {
+              onClose();
+              onLogout();
+              }}>
+              <img className='toolbar-icon' src={`${url}/icons/logout.png`}></img>
+              <p>Cerrar sesión</p>
+            </Link>
+      </div>
     </div>
   );
 }

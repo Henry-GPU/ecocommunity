@@ -2,12 +2,13 @@
   position: fixed;
   height: 60px;
   width: 100%;
-  background-color: #0ab48a;
+  background-color: #2c2c2c;
   display: flex;
   align-items: center;
   padding: 0 10px;
   box-sizing: border-box; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  z-index: 2;
 }
 
 .logo-container {
@@ -15,6 +16,7 @@
   font-size: 24px;
   font-weight: bold;
   margin-right: auto;
+  text-decoration: none;
 }
 
 .navbar-buttons-container {
@@ -41,12 +43,22 @@
 }
 
 .login-button{
-  background-color: #0ab48a;
+  background-color: transparent;
   border: none;
   color: #ffffff;
   font-weight: 600;
+  border-radius: 5px;
+  padding: 10px;
 }
 
+.login-button:hover{
+  background-color: transparent;
+  border: solid #00DBA6 2px;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 15px;
+  padding: 10px;
+}
 @media (min-width: 600px) {
   .menu-button-container {
     display: flex;

@@ -1,0 +1,117 @@
+.toolbar-container{
+    background-color: #1d1d1d;
+    max-width: 205px;
+    width: auto;
+    height: 100vh;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    color: aliceblue;
+    box-sizing: border-box;
+    padding-left: 0.5rem;
+    overflow: hidden;
+}
+
+.mobile-toolbar-container{
+    padding: 10px;
+    background-color: #1d1d1d;
+    width: 100%;
+    height: 100vh;
+    z-index: 2;
+    position: fixed;
+    color: aliceblue;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.mobile-profile-toolbar-section{
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+.mobile-profile-toolbar-image{
+    height: 11rem;
+    width: 11rem;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.mobile-profile-toolbar-username{
+    font-size: 1.5rem;
+}
+
+.mobile-profile-toolbar-section:hover{
+    background-color: #2c2c2c;
+    cursor: pointer;
+}
+.back-button {
+    align-self: flex-start;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: none;
+    border: none;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-left:20px;
+  }
+
+  .back-button:hover{
+    color: #f39c12; 
+  }
+.toolbar-buttons-container{
+    box-sizing: border-box;
+    padding-top: 60px;
+    display: flex;
+    max-width: 500px;
+    flex-direction: column;
+}
+.toolbar-button{
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+.toolbar-button:hover{
+    background-color: #2c2c2c;
+    cursor: pointer;
+}
+.toolbar-icon{
+    height: 2.5rem;
+    width: 2.5rem;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.community-tools{
+    width: 100%;
+}
+.community-tools-search-container{
+    box-sizing: border-box;
+    padding: 0px 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.community-tools-search-input{
+    width: 90%;
+}
+.community-tools-search-button{
+    margin-top: .5rem;
+    width: 5rem;
+    padding: 0.5rem;
+    background-color: #0ab48a;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+}

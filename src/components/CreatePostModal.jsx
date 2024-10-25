@@ -3,12 +3,13 @@ import axios from "axios";
 import "../stylesheets/CreatePostModal.css";
 import url from "./serveo";
 
-function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
+function CreatePostModal({ onClose, userName, userEmail, refreshPosts, userCommunities }) {
     const [postImage, setPostImage] = useState(null);
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [imagePreview, setImagePreview] = useState("");
     const textareaRef = useRef(null);
+    const [community, setCommunity] = useState('');
 
     const handleFileChange = (event) => {
         const image = event.target.files[0];
@@ -19,6 +20,10 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
             setPostImage(null);
             setImagePreview("");
         }
+    };
+    console.log(userCommunities)
+    const handleCommunityChange = (e) => {
+        setCommunity(e.target.value);
     };
 
     const handleGeolocation = () => {
@@ -50,15 +55,15 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
         setIsSubmitting(true);
 
         try {
-            // Obtiene la ubicación automáticamente
             const location = await handleGeolocation();
             
             const formData = new FormData();
             formData.append("email", userEmail);
             formData.append("name", userName);
             formData.append("postImage", postImage);
+            formData.append("community", community);
             formData.append("comment", comment);
-            formData.append("location", location); // Envía la ubicación automáticamente
+            formData.append("location", location);
             
             await axios.post(`${url}/api/posts`, formData, {
                 headers: {
@@ -69,7 +74,7 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
             onClose();
         } catch (error) {
             console.error('Error al procesar la solicitud:', error);
-            alert(error); // Muestra el error al usuario
+            alert(error);
         } finally {
             setIsSubmitting(false);
         }
@@ -109,9 +114,7 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
                         <button
                             type="button"
                             onClick={() => document.getElementById("postImage").click()}
-                        >
-                            Foto
-                        </button>
+                        >Foto </button>
                         <input
                             type="file"
                             id="postImage"
@@ -128,6 +131,18 @@ function CreatePostModal({ onClose, userName, userEmail, refreshPosts }) {
                         />}
                     </div>
                     <button className="post-modal-button" type="submit" disabled={isSubmitting}>Publicar</button>
+                    <select
+                        value={community}
+                        onChange={handleCommunityChange}>
+                            <option value={0}>
+                                   Público
+                            </option>
+                            {Object.entries(userCommunities).map(([key, community]) => (
+                                <option key={community.Id} value={community.Id}>
+                                    {community.Name}
+                                </option>
+                            ))}
+                    </select>
                 </form>        
             </div>
         </div>
