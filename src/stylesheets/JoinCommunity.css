@@ -73,3 +73,10 @@
     font-size: 0.7rem;
     border: none;
 }
+
+.community-item-image img{
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+}

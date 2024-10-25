@@ -70,7 +70,7 @@ function JoinCommunity({ refreshCommunityPosts }) {
                             communities.map((community) => (
                                 <div className='join-community-communities-item' key={community.Id}>
                                     <div className="community-item-image">
-                                        <img src={community.Image ? community.Image : communityPlaceholder} alt="Community" />
+                                        <img src={community.Image ? `${url}/uploads/${community.Image}` : communityPlaceholder} alt="Community" />
                                     </div>
                                     <div className="community-item-fact">{community.Name}</div>
                                     <div className="community-item-fact">Miembros: {community.nMembers}</div>

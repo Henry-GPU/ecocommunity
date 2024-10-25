@@ -417,8 +417,11 @@ router.get('/get-communities', async(req, res) =>{
     const result = await pool.request()
     .input('userId', sql.Int, userId)
     .query(`SELECT [Community].*, 
-              COUNT([AllUsers].[User]) AS [nMembers] 
+              COUNT([AllUsers].[User]) AS [nMembers], 
+			        [Community_Image].[Path] AS [Image]
           FROM [Community]
+          LEFT JOIN [Community_Image]
+            ON [Community_Image].[Community] = [Community].[Id]
           LEFT JOIN [User_Community_Role] 
             ON [Community].[Id] = [User_Community_Role].[Community]
             AND [User_Community_Role].[User] = @userId
@@ -431,8 +434,9 @@ router.get('/get-communities', async(req, res) =>{
             [Community].[State], 
             [Community].[City], 
             [Community].[Description], 
-            [Community].[CreatedAt]
-          ORDER BY [Community].[Name] ASC;
+            [Community].[CreatedAt],
+			      [Community_Image].[Path]
+            ORDER BY [Community].[Name] ASC;
           `)
     const communities = result.recordset;
     res.status(200).json(communities);
