@@ -19,13 +19,13 @@ function Communities({refreshCommunityPosts, isMobile, posts, userEmail, userNam
             handleLogout={handleLogout}
             isAuthenticated={isAuthenticated}
             isCommunityFeed={true}
-            openCreateCommunityModal={() => setIsCreateCommunityModalOpen(true)}
+            openCreateCommunityModal={setIsCreateCommunityModalOpen(true)}
             />
             )
         }
         { isCreateCommunityModalOpen &&
             <CreateCommunityModal
-            onClose={()=>setIsCreateCommunityModalOpen(false)}/>
+            onClose={setIsCreateCommunityModalOpen(false)}/>
         }
             <div className='posts-container'>
             <JoinCommunity

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import '../stylesheets/ToolBar.css'
 import url from './serveo';
 
-function Menu({ profileImage, onClose, onLogout, userName, handleOpenSettings, userRole }) {
+function Menu({ openCreateCommunityModal, profileImage, onClose, onLogout, userName, handleOpenSettings, userRole }) {
   return (
     <div className="mobile-toolbar-container">
       <button className="back-button" onClick={onClose}>←</button>
@@ -46,6 +46,11 @@ function Menu({ profileImage, onClose, onLogout, userName, handleOpenSettings, u
               <img className='toolbar-icon' src={`${url}/icons/communities.png`}></img>
               <p>Comunidades</p>
             </Link>
+            <div className='toolbar-button'
+                        onClick={openCreateCommunityModal}>
+                            <img className='toolbar-icon' src={`${url}/icons/communities.png`}></img>
+                            <p>Crear una comunidad</p>
+                    </div>
             <Link 
               className='toolbar-button'
               to="/" 

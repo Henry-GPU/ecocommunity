@@ -33,7 +33,8 @@ function ToolBar ({isCommunityFeed, openCreateCommunityModal, profileImage, user
             {(!isCommunityFeed) &&
             <Link 
                 to='/communities'
-                className='toolbar-button'>
+                className='toolbar-button'
+                >
                     <img className='toolbar-icon' src={`${url}/icons/communities.png`}></img>
                     <p>Comunidades</p>
             </Link>

@@ -8,6 +8,7 @@ import "../stylesheets/Sidebar.css"
 import Sidebar from "./Sidebar.jsx";
 import url from "./serveo.js";
 import { Link } from "react-router-dom";
+import CreateCommunityModal from "./CreateCommunityModal.jsx";
 
 const axiosInstance = axios.create({
   baseURL: url,
@@ -18,6 +19,7 @@ function Navbar({ isAuthenticated, profileImage, fetchProfileImage, handleLogout
   const [isLogin, setIsLogin] = useState(true);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+  const [isCreateCommunityModalOpen, setIsCreateCommunityModalOpen] = useState(false);
 
   const handleUserImageClick = () => {
     if (isAuthenticated) {
@@ -95,8 +97,13 @@ function Navbar({ isAuthenticated, profileImage, fetchProfileImage, handleLogout
           onLogout={handleLogout}
           userName={userName}
           handleOpenSettings={handleOpenSettings}
+          openCreateCommunityModal={() => setIsCreateCommunityModalOpen(true)}
         />
       )}
+      {isCreateCommunityModalOpen && 
+      <CreateCommunityModal
+        onClose={() => {setIsCreateCommunityModalOpen(false); setIsMenuVisible(false);}}
+      />}
       {isModalOpen && (
         <LoginRegisterModal
           onClose={() => setModalOpen(false)}

@@ -41,16 +41,18 @@ function App() {
   const [userCommunities, setUserCommunities] = useState([]);
 
   const handleLogin = (profile) => {
-    setIsAuthenticated(true);
-    setUserProfile(profile);
-    setUserEmail(profile.email);
-    setUserRole(profile.role);
-    console.log('rol del usuario', profile.role);
-    setIsModalOpen(false);
-    setIsCreatePostModalOpen(false);
-
-    localStorage.setItem("userProfile", JSON.stringify(profile));
-    localStorage.setItem("isAuthenticated", "true");
+    if (!isAuthenticated) {
+      setIsAuthenticated(true);
+      setUserProfile(profile);
+      setUserEmail(profile.email);
+      setUserRole(profile.role);
+      console.log('rol del usuario', profile.role);
+      setIsModalOpen(false);
+      setIsCreatePostModalOpen(false);
+  
+      localStorage.setItem("userProfile", JSON.stringify(profile));
+      localStorage.setItem("isAuthenticated", "true");
+    }
   };
 
   const handleLogout = () => {
@@ -80,7 +82,6 @@ function App() {
   // Función para cargar posts
   const loadPosts = async () => {
     try {
-      console.log(userEmail)
       const response = await axios.get(`${url}/api/posts`, {
         params: {userEmail: userEmail}});
       setPosts(response.data);
@@ -166,7 +167,6 @@ function App() {
       setIsAuthenticated(true);
       setUserEmail(JSON.parse(storedProfile).email);
       setUserRole(JSON.parse(storedProfile).role);
-      console.log('role:', userRole);
     }
     if (userEmail) {
       fetchUserName();
