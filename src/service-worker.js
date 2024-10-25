@@ -10,6 +10,8 @@ const urlsToCache = [
   `${url}/icons/placeholder.png`
 ];
 
+const CACHE_ASSETS = self.__WB_MANIFEST || urlsToCache;
+
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
