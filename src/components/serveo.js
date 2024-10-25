@@ -1,3 +1,3 @@
 //const url = 'https://ecocommunityorg.serveo.net'
-const url = 'http://localhost:5000'
+const url = 'https://ecocommunityorg.serveo.net'
 export default url;
