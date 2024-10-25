@@ -1,3 +1,4 @@
+import url from './components/serveo.js'
 const CACHE_NAME = 'icon-cache-v';
 const urlsToCache = [
   `${url}/icons/admin-dashboard.png`,
