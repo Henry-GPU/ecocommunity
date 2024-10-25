@@ -1,16 +1,18 @@
-import url from './components/serveo.js'
+/* eslint-disable no-restricted-globals */
+import url from './components/serveo.js';
+
 const CACHE_NAME = 'icon-cache-v';
 const urlsToCache = [
   `${url}/icons/admin-dashboard.png`,
   `${url}/icons/settings.png`,
   `${url}/icons/communities.png`,
-  `${url}/icons/logout.png`
+  `${url}/icons/logout.png`,
   `${url}/icons/placeholder.png`
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        chaches.open(CACHE_NAME).then((cache) => {
+        caches.open(CACHE_NAME).then((cache) => {
             console.log('Archivos cacheados');
             return cache.addAll(urlsToCache);
         })
@@ -23,19 +25,19 @@ self.addEventListener('fetch', (event) => {
         return response || fetch(event.request);
       })
     );
-  });
-  
-  self.addEventListener('activate', (event) => {
+});
+
+self.addEventListener('activate', (event) => {
     const cacheWhitelist = [CACHE_NAME];
     event.waitUntil(
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheWhitelist.indexOf(cacheName) === -1) {
+            if (!cacheWhitelist.includes(cacheName)) {
               return caches.delete(cacheName);
             }
           })
         );
       })
     );
-  });
+});
