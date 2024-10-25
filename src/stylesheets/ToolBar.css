@@ -36,13 +36,13 @@
     align-items: center;
 }
 .mobile-profile-toolbar-image{
-    height: 11rem;
-    width: 11rem;
+    height: 10rem;
+    width: 10rem;
     object-fit: cover;
     border-radius: 50%;
 }
 .mobile-profile-toolbar-username{
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .mobile-profile-toolbar-section:hover{
@@ -77,9 +77,9 @@
     display: flex;
     gap: 0.8rem;
     align-items: center;
-    padding: 5px 15px;
+    padding: 5px 10px;
     border-radius: 5px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 .toolbar-button:hover{
     background-color: #2c2c2c;
