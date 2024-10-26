@@ -384,59 +384,6 @@ router.post('/posts', upload.single('postImage'), async (req, res) => {
 });
 
 
-
-/*
-router.get('/posts', async (req, res) => {
-  try {
-    const pool = await poolPromise;
-    const result = await pool.request().query(`SELECT 
-      [Post].[Id],
-      [Post].[Comment], 
-      [User].[Name] AS User_Name, 
-      [User].[Email] AS User_Email,
-      [Post].[Location],
-      [Post].[CreatedAt],
-      [Post].[Community], 
-      [Post].[Is_Active], 
-      [Post_Image].[Path] AS Post_Image
-      STRING_AGG(DISTINCT [User].[Email], ',') AS Likes
-      STRING_AGG(DISTINCT [User].[Email], ',') AS Verifications
-      FROM 
-      [Post]
-      JOIN 
-      [User] ON [Post].[User] = [User].[Id]
-      JOIN 
-      [Post_Image] ON [Post].[Id] = [Post_Image].[Post]
-      ORDER BY CreatedAt DESC`);
-    res.status(200).json(result.recordset);
-  } catch (error) {
-    console.error('Error al obtener los posts:', error);
-    res.status(500).json({ message: 'Error al obtener los posts', error });
-  }
-});
-
-router.get('/get-user-name', async (req, res) => {
-  const email = req.query.userEmail;
-
-  try {
-    const pool = await poolPromise;
-    const result = await pool.request()
-      .input('email', sql.NVarChar, email)
-      .query('SELECT [User_Name] FROM [User] WHERE [Email] = @email');
-
-    const user = result.recordset[0];
-    if (user) {
-      res.status(200).send({ userName: user.User_Name });
-    } else {
-      res.status(404).send({ message: 'Usuario no encontrado' });
-    }
-  } catch (err) {
-    console.error('Error al obtener el nombre de usuario:', err);
-    res.status(500).send({ message: 'Error al obtener el nombre de usuario' });
-  }
-});
-*/
-
 router.get('/check-like/:postId', async(req, res) => {
   const postId = req.params.postId;
   const userEmail = req.query.email;
@@ -483,12 +430,10 @@ router.post('/like/:postId', async (req, res) => {
   try {
     const pool = await poolPromise;
 
-    // Buscar el ID del usuario basado en el correo
     const userResult = await pool.request()
       .input('userEmail', sql.NVarChar, userEmail)
       .query(`SELECT [Id] FROM [User] WHERE [Email] = @userEmail`);
 
-    // Validar si el usuario existe
     if (userResult.recordset.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
@@ -722,9 +667,5 @@ router.post('/hide-post', async(req, res) =>{
         return res.status(500).json({ message: 'Error al ocultar/desocultar el post' });
     }
 });
-
-
-  
-  
-  
+ 
 module.exports = router;
