@@ -3,7 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const { upload } = require('./middlewares/upload');
-const sql = require('mssql'); // Asegúrate de tener esto al principio del archivo
+const sql = require('mssql');
 
 
 const app = express();

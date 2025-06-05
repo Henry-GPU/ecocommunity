@@ -435,7 +435,7 @@ router.get('/get-communities', async(req, res) =>{
             [Community].[City], 
             [Community].[Description], 
             [Community].[CreatedAt],
-			      [Community_Image].[Path]
+			      [Community_Image].[Path],
             ORDER BY [Community].[Name] ASC;
           `)
     const communities = result.recordset;

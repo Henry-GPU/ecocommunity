@@ -1,0 +1,161 @@
+-- Tabla User
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'User' AND schema_id = SCHEMA_ID('dbo'))
+BEGIN
+  CREATE TABLE [dbo].[User] (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    [Name] NVARCHAR(255) NOT NULL,
+    User_Name NVARCHAR(255) NOT NULL,
+    Email NVARCHAR(255) NOT NULL UNIQUE,
+    Password NVARCHAR(255) NOT NULL,
+    Birthdate DATE NOT NULL,
+	[CreatedAt] DATETIME DEFAULT GETDATE(),
+	[Is_Active] BIT NOT NULL DEFAULT 1
+  );
+END
+GO
+
+
+-- Tabla Role (asumiendo que tienes roles predefinidos)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Role' AND schema_id = SCHEMA_ID('dbo'))
+BEGIN
+  CREATE TABLE [dbo].[Role] (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL UNIQUE
+  );
+END
+GO
+
+-- Tabla User_Role (relación muchos a muchos)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'User_Role' AND schema_id = SCHEMA_ID('dbo'))
+BEGIN
+  CREATE TABLE [dbo].[User_Role] (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    [User] INT NOT NULL,
+    [Role] INT NOT NULL,
+    CONSTRAINT FK_UserRole_User FOREIGN KEY ([User]) REFERENCES [dbo].[User](Id),
+    CONSTRAINT FK_UserRole_Role FOREIGN KEY ([Role]) REFERENCES [dbo].[Role](Id)
+  );
+END
+GO
+
+-- Tabla User_Image (para guardar ruta de imagen de perfil)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'User_Image' AND schema_id = SCHEMA_ID('dbo'))
+BEGIN
+  CREATE TABLE [dbo].[User_Image] (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Path NVARCHAR(500) NOT NULL,
+    [User] INT NOT NULL,
+	[CreatedAt] DATETIME DEFAULT GETDATE(),
+	[IsActive] BIT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_UserImage_User FOREIGN KEY ([User]) REFERENCES [dbo].[User](Id)
+  );
+END
+GO
+
+INSERT INTO [dbo].[Role] (Name) VALUES
+('Administrador'),   -- Id = 1
+('Moderador'),       -- Id = 2        -- Id = 3
+('Editor'),          -- Id = 4
+('Invitado'),        -- Id = 5
+('Miembro'),
+('Usuario') ;        -- Id = 6
+
+ALTER TABLE [dbo].[User_Image]
+ADD [CreatedAt] DATETIME DEFAULT GETDATE(),
+[IsActive] BIT NOT NULL DEFAULT 1;
+
+CREATE TABLE [dbo].[Post] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Comment] NVARCHAR(MAX) NOT NULL,
+  [User] INT NOT NULL,
+  [Location] NVARCHAR(255),
+  [CreatedAt] DATETIME DEFAULT GETDATE(),
+  [Is_Active] BIT NOT NULL DEFAULT 1,
+
+  FOREIGN KEY ([User]) REFERENCES [User]([Id])
+);
+
+
+
+CREATE TABLE [dbo].[Post_Image] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Path] NVARCHAR(255) NOT NULL,
+  [Post] INT NOT NULL,
+  [CreatedAt] DATETIME DEFAULT GETDATE(),
+ [Is_Active] BIT NOT NULL DEFAULT 1,
+  FOREIGN KEY ([Post]) REFERENCES [Post]([Id])
+);
+
+CREATE TABLE [dbo].[Community] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Name] NVARCHAR(100) NOT NULL,
+  [Description] NVARCHAR(MAX),
+  [Country] NVARCHAR(100),
+  [State] NVARCHAR(100),
+  [City] NVARCHAR(100),
+  [CreatedAt] DATETIME DEFAULT GETDATE()
+);
+
+
+CREATE TABLE [dbo].[User_Community_Role] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [User] INT NOT NULL,
+  [Community] INT NOT NULL,
+  [Role] INT NOT NULL,
+
+  FOREIGN KEY ([User]) REFERENCES [User]([Id]),
+  FOREIGN KEY ([Community]) REFERENCES [Community]([Id])
+);
+
+CREATE TABLE [dbo].[Community_Image] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Path] NVARCHAR(255) NOT NULL,
+  [Community] INT NOT NULL,
+
+  FOREIGN KEY ([Community]) REFERENCES [Community]([Id])
+);
+
+
+
+
+CREATE TABLE [dbo].[Post_Community] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Post] INT NOT NULL,
+  [Community] INT NOT NULL,
+
+  FOREIGN KEY ([Post]) REFERENCES [Post]([Id]),
+  FOREIGN KEY ([Community]) REFERENCES [Community]([Id])
+);
+
+CREATE TABLE [dbo].[User_Post_Hidden] (
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [User] INT NOT NULL,
+  [Post] INT NOT NULL,
+  [Is_Hidden] BIT NOT NULL DEFAULT 1,
+
+  CONSTRAINT FK_User_Post_Hidden_User FOREIGN KEY ([User]) REFERENCES [User]([Id]),
+  CONSTRAINT FK_User_Post_Hidden_Post FOREIGN KEY ([Post]) REFERENCES [Post]([Id]),
+  CONSTRAINT UQ_User_Post UNIQUE ([User], [Post])
+);
+
+CREATE TABLE [Like] (
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [User] INT NOT NULL,
+    [Post] INT NOT NULL,
+    [Is_Active] BIT NOT NULL DEFAULT 1,
+    [Created_At] DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Like_User FOREIGN KEY ([User]) REFERENCES [User]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_Like_Post FOREIGN KEY ([Post]) REFERENCES [Post]([Id]) ON DELETE CASCADE,
+    CONSTRAINT UQ_Like_User_Post UNIQUE ([User], [Post])
+);
+
+CREATE TABLE [Verification] (
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [User] INT NOT NULL,
+    [Post] INT NOT NULL,
+    [Is_Active] BIT NOT NULL DEFAULT 1,
+    [Created_At] DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Verification_User FOREIGN KEY ([User]) REFERENCES [User]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_Verification_Post FOREIGN KEY ([Post]) REFERENCES [Post]([Id]) ON DELETE CASCADE,
+    CONSTRAINT UQ_Verification_User_Post UNIQUE ([User], [Post])
+);

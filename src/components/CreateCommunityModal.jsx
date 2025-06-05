@@ -36,10 +36,6 @@ function CreateCommunityModal({onClose }) {
     const handleSubmit = async (e) => {
         e.preventDefault(); 
 
-        if (!name || !description || !selectedCity) {
-            setErrorMessage('Por favor completa todos los campos requeridos.');
-            return;
-        }
 
         const formData = new FormData();
         formData.append('userEmail', userEmail);

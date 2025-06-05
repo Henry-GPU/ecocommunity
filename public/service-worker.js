@@ -1,13 +1,13 @@
 /* eslint-disable no-restricted-globals */
-import url from './components/serveo.js';
+const BASE_URL = 'http://localhost:5000';
 
 const CACHE_NAME = 'icon-cache-v';
 const urlsToCache = [
-  `${url}/icons/admin-dashboard.png`,
-  `${url}/icons/settings.png`,
-  `${url}/icons/communities.png`,
-  `${url}/icons/logout.png`,
-  `${url}/icons/placeholder.png`
+  `${BASE_URL}/icons/admin-dashboard.png`,
+  `${BASE_URL}/icons/settings.png`,
+  `${BASE_URL}/icons/communities.png`,
+  `${BASE_URL}/icons/logout.png`,
+  `${BASE_URL}/icons/placeholder.png`
 ];
 
 const CACHE_ASSETS = self.__WB_MANIFEST || urlsToCache;
